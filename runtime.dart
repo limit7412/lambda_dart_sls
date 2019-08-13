@@ -3,16 +3,16 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 
 void lambdaHandler(Function callback) async {
-  var api = Platform.environment['AWS_LAMBDA_RUNTIME_API'];
+  final api = Platform.environment['AWS_LAMBDA_RUNTIME_API'];
 
   while (true) {
-    var response =
+    final response =
         await http.get('http://${api}/2018-06-01/runtime/invocation/next');
 
-    var event_data = json.decode(response.body);
-    var request_id = response.headers['lambda-runtime-aws-request-id'];
+    final event_data = json.decode(utf8.decode(response.bodyBytes));
+    final request_id = response.headers['lambda-runtime-aws-request-id'];
 
-    var result = await callback(event_data);
+    final result = await callback(event_data);
 
     http.post(
         'http://${api}/2018-06-01/runtime/invocation/${request_id}/response',
