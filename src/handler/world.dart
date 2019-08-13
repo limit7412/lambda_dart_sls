@@ -1,7 +1,7 @@
 import '../../runtime.dart';
 
 dynamic world(dynamic event) {
-  var body = event['body'];
+  final body = event['body'];
   return body;
 }
 
