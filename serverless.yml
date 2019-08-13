@@ -3,15 +3,12 @@ service: serverless-dart-sls
 custom:
   defaultStage: dev
   api_version: v0
-  common: common # serverless.ymlのバグ回避用
 
 provider:
   name: aws
   runtime: provided
-  timeout: 300
   region: ap-northeast-1
   stage: ${opt:stage, self:custom.defaultStage}
-  profile: qazx7412
 
 functions:
   hello:
