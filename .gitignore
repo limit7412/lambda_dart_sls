@@ -2,3 +2,5 @@
 \.serverless/
 
 \.aot/
+
+\.packages

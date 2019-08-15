@@ -10,7 +10,9 @@ rm -rf $bin_dir
 mkdir $bin_dir
 
 docker run --rm -v $(pwd):/work -w /work google/dart cp /usr/lib/dart/bin/dartaotruntime ./.aot
-sudo chmod +x $bin_dir/dartaotruntime  || exit 1
+sudo chmod +x $bin_dir/dartaotruntime || exit 1
+
+pub get || exit 1
 
 cat ./serverless.yml |
 grep 'handler' |
