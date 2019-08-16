@@ -1,4 +1,0 @@
-#!/bin/sh
-
-bin_dir="$LAMBDA_TASK_ROOT/.aot"
-$bin_dir/dartaotruntime $bin_dir/$_HANDLER.dart.aot
