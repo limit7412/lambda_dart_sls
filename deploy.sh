@@ -12,7 +12,7 @@ mkdir $bin_dir
 cat <<EOF > ./bootstrap
 #!/bin/sh
 
-bin_dir="\$LAMBDA_TASK_ROOT/.aot"
+bin_dir="\$LAMBDA_TASK_ROOT/$bin_dir"
 \$bin_dir/dartaotruntime \$bin_dir/\$_HANDLER.dart.aot
 EOF
 chmod +x ./bootstrap || exit 1
