@@ -17,11 +17,9 @@ functions:
       - http:
           path: hello
           method: get
-          integration: lambda
   world:
     handler: world
     events:
       - http:
           path: world
           method: post
-          integration: lambda
