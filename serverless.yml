@@ -1,25 +1,23 @@
-service: serverless-dart-sls
+service: lambda-dart-sls
 
 custom:
+  defaultAccount: dummy
+  defaultDigest: dummy
   defaultStage: dev
-  api_version: v0
 
 provider:
   name: aws
   runtime: provided
+  timeout: 20
   region: ap-northeast-1
   stage: ${opt:stage, self:custom.defaultStage}
+  # environment:
+  #   ${file(./env.yml)}
 
 functions:
   hello:
-    handler: hello
+    image: ${opt:account, self:custom.defaultAccount}.dkr.ecr.${self:provider.region}.amazonaws.com/lambda_dart_sls_${self:provider.stage}@${opt:digest, self:custom.defaultDigest}
     events:
       - http:
           path: hello
           method: get
-  world:
-    handler: world
-    events:
-      - http:
-          path: world
-          method: post
