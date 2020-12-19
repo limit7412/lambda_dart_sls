@@ -1,0 +1,58 @@
+name: dart-sls
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: setup node.js
+      uses: actions/setup-node@v1
+
+    - name: install sls
+      run: npm i -g serverless
+
+    - name: checkout
+      uses: actions/checkout@v1
+
+    - name: configure  aws credentials from Test account
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-1
+
+    - name: login ecr
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@master
+
+    - name: build and push ecr
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: lambda_dart_sls_dev
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    - name: get aws account id
+      id: get-aws-account
+      run: |
+        echo "::set-output name=ACCOUNT_ID::$(aws sts get-caller-identity | jq -r .Account)"
+
+    - name: get ecr digest
+      id: get-ecr-digest
+      env:
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        echo "::set-output name=DIGEST::$(aws ecr list-images --repository-name lambda_dart_sls_dev | jq '.imageIds[] | select(.imageTag=="'$IMAGE_TAG'") | .imageDigest' | tr -d '"')"
+
+    - name: deploy
+      env:
+        ACCOUNT_ID: ${{ steps.get-aws-account.outputs.ACCOUNT_ID }}
+        DIGEST: ${{ steps.get-ecr-digest.outputs.DIGEST }}
+      run: sls deploy --verbose --stage dev --account $ACCOUNT_ID --digest $DIGEST > /dev/null
