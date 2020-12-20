@@ -19,7 +19,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v1
 
-    - name: configure  aws credentials from Test account
+    - name: configure aws credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -42,6 +42,7 @@ jobs:
     - name: get aws account id
       id: get-aws-account
       run: |
+        echo "::add-mask name=ACCOUNT_ID::$(aws sts get-caller-identity | jq -r .Account)"
         echo "::set-output name=ACCOUNT_ID::$(aws sts get-caller-identity | jq -r .Account)"
 
     - name: get ecr digest
