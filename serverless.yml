@@ -16,7 +16,8 @@ provider:
 
 functions:
   hello:
-    image: ${opt:account, self:custom.defaultAccount}.dkr.ecr.${self:provider.region}.amazonaws.com/lambda_dart_sls_${self:provider.stage}@${opt:digest, self:custom.defaultDigest}
+    handler: hello
+    # image: ${opt:account, self:custom.defaultAccount}.dkr.ecr.${self:provider.region}.amazonaws.com/lambda_dart_sls_${self:provider.stage}@${opt:digest, self:custom.defaultDigest}
     events:
       - http:
           path: hello
