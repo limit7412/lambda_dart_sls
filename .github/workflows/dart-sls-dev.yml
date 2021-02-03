@@ -26,34 +26,45 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-1
 
-    - name: login ecr
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@master
+    # - name: login ecr
+    #   id: login-ecr
+    #   uses: aws-actions/amazon-ecr-login@master
 
-    - name: build and push ecr
+    # - name: build and push ecr
+    #   env:
+    #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+    #     ECR_REPOSITORY: lambda_dart_sls_dev
+    #     IMAGE_TAG: ${{ github.sha }}
+    #   run: |
+    #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+    #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    # - name: get aws account id
+    #   id: get-aws-account
+    #   run: |
+    #     echo "::add-mask name=ACCOUNT_ID::$(aws sts get-caller-identity | jq -r .Account)"
+    #     echo "::set-output name=ACCOUNT_ID::$(aws sts get-caller-identity | jq -r .Account)"
+
+    # - name: get ecr digest
+    #   id: get-ecr-digest
+    #   env:
+    #     IMAGE_TAG: ${{ github.sha }}
+    #   run: |
+    #     echo "::set-output name=DIGEST::$(aws ecr list-images --repository-name lambda_dart_sls_dev | jq '.imageIds[] | select(.imageTag=="'$IMAGE_TAG'") | .imageDigest' | tr -d '"')"
+
+    # - name: deploy
+    #   env:
+    #     ACCOUNT_ID: ${{ steps.get-aws-account.outputs.ACCOUNT_ID }}
+    #     DIGEST: ${{ steps.get-ecr-digest.outputs.DIGEST }}
+    #   run: sls deploy --verbose --stage dev --account $ACCOUNT_ID --digest $DIGEST > /dev/null
+
+    - name: build
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: lambda_dart_sls_dev
-        IMAGE_TAG: ${{ github.sha }}
+        REPOSITORY: build-image
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-    - name: get aws account id
-      id: get-aws-account
-      run: |
-        echo "::add-mask name=ACCOUNT_ID::$(aws sts get-caller-identity | jq -r .Account)"
-        echo "::set-output name=ACCOUNT_ID::$(aws sts get-caller-identity | jq -r .Account)"
-
-    - name: get ecr digest
-      id: get-ecr-digest
-      env:
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        echo "::set-output name=DIGEST::$(aws ecr list-images --repository-name lambda_dart_sls_dev | jq '.imageIds[] | select(.imageTag=="'$IMAGE_TAG'") | .imageDigest' | tr -d '"')"
+        docker build -t $REPOSITORY .
+        docker run --name $REPOSITORY -d $REPOSITORY /bin/sh
+        docker cp $REPOSITORY:/work/bootstrap .
 
     - name: deploy
-      env:
-        ACCOUNT_ID: ${{ steps.get-aws-account.outputs.ACCOUNT_ID }}
-        DIGEST: ${{ steps.get-ecr-digest.outputs.DIGEST }}
-      run: sls deploy --verbose --stage dev --account $ACCOUNT_ID --digest $DIGEST > /dev/null
+      run: sls deploy --stage dev > /dev/null
