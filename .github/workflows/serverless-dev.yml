@@ -1,8 +1,6 @@
-name: dart-sls
+name: serverless-dev
 
-on:
-  push:
-    branches: [ master ]
+on: pull_request
 
 jobs:
   deploy:
@@ -27,4 +25,4 @@ jobs:
         aws-region: ap-northeast-1
 
     - name: deploy
-      run: sls deploy --stage prod > /dev/null
+      run: sls deploy --stage dev > /dev/null
