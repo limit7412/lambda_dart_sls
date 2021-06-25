@@ -4,7 +4,7 @@ WORKDIR /work
 COPY ./ ./
 
 RUN pub get
-RUN dart2native ./src/main.dart -o ./bootstrap
+RUN dart compile exe ./src/main.dart -o ./bootstrap
 RUN chmod +x bootstrap
 
 FROM public.ecr.aws/lambda/provided:al2
