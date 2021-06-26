@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'runtime/lambda.dart' as serverless;
+import 'runtime/serverless.dart' as serverless;
 
 void main() {
   serverless.lambda().handler("hello", (event) async {
