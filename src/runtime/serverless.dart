@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 
 class lambda {
-  void handler(String name, Function callback) async {
+  void handler(String name, Function(Map<String, dynamic>) callback) async {
     if (name != Platform.environment['_HANDLER']) {
       return;
     }
@@ -14,7 +14,8 @@ class lambda {
       final response =
           await http.get('http://${api}/2018-06-01/runtime/invocation/next');
 
-      final event_data = json.decode(utf8.decode(response.bodyBytes));
+      final Map<String, dynamic> event_data =
+          json.decode(utf8.decode(response.bodyBytes));
       final request_id = response.headers['lambda-runtime-aws-request-id'];
 
       try {
