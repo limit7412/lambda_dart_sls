@@ -7,6 +7,9 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     steps:
+    - name: add-mask
+      run: |
+        echo "::add-mask::${{ secrets.API_URL_MASK }}"
 
     - name: setup node.js
       uses: actions/setup-node@v1
@@ -25,4 +28,4 @@ jobs:
         aws-region: ap-northeast-1
 
     - name: deploy
-      run: sls deploy --stage dev > /dev/null
+      run: sls deploy --stage dev
