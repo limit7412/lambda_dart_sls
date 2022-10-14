@@ -1,4 +1,4 @@
-FROM google/dart:latest as build-image
+FROM dart:latest as build-image
 
 WORKDIR /work
 COPY ./ ./
