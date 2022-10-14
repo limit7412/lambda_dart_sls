@@ -1,9 +1,9 @@
-FROM google/dart:latest as build-image
+FROM dart:latest as build-image
 
 WORKDIR /work
 COPY ./ ./
 
-RUN pub get
+RUN dart pub get
 RUN dart compile exe ./src/main.dart -o ./bootstrap
 RUN chmod +x bootstrap
 
