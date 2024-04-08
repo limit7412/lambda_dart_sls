@@ -12,7 +12,7 @@ class lambda {
 
     while (true) {
       final response =
-          await http.get('http://${api}/2018-06-01/runtime/invocation/next');
+          await http.get('http://${api}/2018-06-01/runtime/invocation/next' as Uri);
 
       final Map<String, dynamic> event_data =
           json.decode(utf8.decode(response.bodyBytes));
@@ -21,11 +21,11 @@ class lambda {
       try {
         final result = await callback(event_data);
         http.post(
-            'http://${api}/2018-06-01/runtime/invocation/${request_id}/response',
+            'http://${api}/2018-06-01/runtime/invocation/${request_id}/response' as Uri,
             body: json.encode(result));
       } catch (e) {
         http.post(
-            'http://${api}/2018-06-01/runtime/invocation/${request_id}/error',
+            'http://${api}/2018-06-01/runtime/invocation/${request_id}/error' as Uri,
             body: json.encode({
               'statusCode': 500,
               'body': json.encode({'msg': 'Internal Lambda Error'}),
