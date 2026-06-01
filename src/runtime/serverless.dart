@@ -11,8 +11,8 @@ class lambda {
     final api = Platform.environment['AWS_LAMBDA_RUNTIME_API'];
 
     while (true) {
-      final response =
-          await http.get('http://${api}/2018-06-01/runtime/invocation/next' as Uri);
+      final response = await http
+          .get(Uri.parse('http://${api}/2018-06-01/runtime/invocation/next'));
 
       final Map<String, dynamic> event_data =
           json.decode(utf8.decode(response.bodyBytes));
@@ -21,11 +21,13 @@ class lambda {
       try {
         final result = await callback(event_data);
         http.post(
-            'http://${api}/2018-06-01/runtime/invocation/${request_id}/response' as Uri,
+            Uri.parse(
+                'http://${api}/2018-06-01/runtime/invocation/${request_id}/response'),
             body: json.encode(result));
       } catch (e) {
         http.post(
-            'http://${api}/2018-06-01/runtime/invocation/${request_id}/error' as Uri,
+            Uri.parse(
+                'http://${api}/2018-06-01/runtime/invocation/${request_id}/error'),
             body: json.encode({
               'statusCode': 500,
               'body': json.encode({'msg': 'Internal Lambda Error'}),
