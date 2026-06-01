@@ -2,6 +2,11 @@ name: serverless-dev
 
 on: pull_request
 
+# OIDC で AWS にアクセスするため id-token の発行を許可する。
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy:
     name: deploy
@@ -20,12 +25,18 @@ jobs:
       - name: checkout
         uses: actions/checkout@v1
 
+      # アクセスキー方式から OIDC(AssumeRoleWithWebIdentity)方式へ移行。
+      # secrets.AWS_ROLE_ARN に ga-deploy-oicd_lambda-dart-sls ロールの ARN を設定する。
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ap-northeast-1
+
+      # zip 版は serverless-plugin-scripts を使って bootstrap をビルドするため、
+      # デプロイ前にローカルプラグインを導入しておく。
+      - name: install plugins
+        run: npm install
 
       - name: deploy
         run: sls deploy --stage dev
