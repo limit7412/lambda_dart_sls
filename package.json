@@ -1,0 +1,8 @@
+{
+  "name": "lambda-dart-sls",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "serverless-plugin-scripts": "^1.0.2"
+  }
+}

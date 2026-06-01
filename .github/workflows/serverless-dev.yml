@@ -27,6 +27,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-1
 
+      # zip 版は serverless-plugin-scripts を使って bootstrap をビルドするため、
+      # デプロイ前にローカルプラグインを導入しておく。
+      - name: install plugins
+        run: npm install
+
       - name: deploy
         run: sls deploy --stage dev
         env:
