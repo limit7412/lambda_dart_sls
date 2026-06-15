@@ -1,6 +1,6 @@
 name: serverless_dart_sls
 version: 0.0.1
 environment:
-  sdk: ">=3.0.0"
+  sdk: ">=3.8.0"
 dependencies:
   http: ^1.2.1
