@@ -25,6 +25,15 @@ jobs:
       - name: checkout
         uses: actions/checkout@v1
 
+      # bootstrap のビルドは Docker をやめ、ランナー上の Dart で直接行う。
+      # ランナー(ubuntu-24.04-arm)が linux/arm64 なので、sls フックの
+      # `dart compile exe --target-os=linux --target-arch=arm64` は
+      # ホスト=ターゲットのネイティブビルドになる。
+      - name: setup dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
       # アクセスキー方式から OIDC(AssumeRoleWithWebIdentity)方式へ移行。
       # secrets.AWS_ROLE_ARN に ga-deploy-oicd_lambda-dart-sls ロールの ARN を設定する。
       - name: configure aws credentials

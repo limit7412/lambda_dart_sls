@@ -2,8 +2,11 @@
 
 my serverless template dart on aws lambda for serverless framework
 
-zip(provided.al2)版。デプロイ時に `serverless-plugin-scripts` が Docker(dart:latest)で
-`bootstrap` を静的ビルドし、zip としてパッケージングする。
+zip(provided.al2023 / arm64)版。デプロイ時に `serverless-plugin-scripts` が
+Dart 3.8+ のクロスコンパイル(`dart compile exe --target-os=linux --target-arch=arm64`)で
+`bootstrap`(linux/arm64 バイナリ)を Docker 無しで生成し、zip としてパッケージングする。
+
+ローカルに Dart 3.8 以上が必要(Windows / macOS / Linux から linux/arm64 へクロスコンパイル可能)。
 
 ```
 $ npm install
