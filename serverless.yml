@@ -12,9 +12,10 @@ custom:
       # macOS / Apple Silicon でも Lambda(provided.al2023, arm64) 互換の
       # linux/arm64 バイナリを Docker 無しで生成する。
       # pub get で依存を解決してから dart compile exe で bootstrap を生成する。
+      # 行末バックスラッシュでの改行は Windows(cmd.exe)で構文エラーになるため、
+      # マルチプラットフォーム互換のため 1 行で記述する。
       'before:package:createDeploymentArtifacts': |
-        dart pub get && \
-        dart compile exe --target-os=linux --target-arch=arm64 ./src/main.dart -o ./bootstrap
+        dart pub get && dart compile exe --target-os=linux --target-arch=arm64 ./src/main.dart -o ./bootstrap
 
 provider:
   name: aws
